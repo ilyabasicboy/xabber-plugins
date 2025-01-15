@@ -1,0 +1,18 @@
+{% load base_tags %}
+
+{% if plugin_list %}
+    {% paginate plugin_list 24 as paginated_plugin_list %}
+
+    {% for plugin in paginated_plugin_list %}
+        <div>
+            <a href="{% url 'plugins:plugin_detail' plugin_name=plugin.name %}">
+                {{ plugin.display_name }}
+            </a>
+            <a href="{% url 'plugins:plugin_delete' plugin_name=plugin.name %}">Delete</a>
+        </div>
+    {% endfor %}
+
+    {% if plugin_list.count > 24 %}
+        {% include 'parts/pagination.html' with objects=paginated_plugin_list %}
+    {% endif %}
+{% endif %}

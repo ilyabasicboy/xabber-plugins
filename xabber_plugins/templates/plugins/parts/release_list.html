@@ -1,0 +1,60 @@
+{% for release in release_list %}
+    <div>
+        <table>
+            <tr>
+                <td>Release version:</td>
+                <td>{{ release.version }}</td>
+            </tr>
+            <tr>
+                <td>Xabber Server Versions:</td>
+                <td>
+                    {% for version in release.xabber_server_versions %}
+                        {{ version }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>XMPP Server Versions:</td>
+                <td>
+                    {% for version in release.xmpp_server_versions %}
+                        {{ version }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>Xabber Server Panel Versions:</td>
+                <td>
+                    {% for version in release.xabber_server_panel_versions %}
+                        {{ version }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>Verified:</td>
+                <td>
+                    {% if release.veryfied %}
+                        Verified
+                    {% else %}
+                        Not verified
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Track:</td>
+                <td>
+                    {{ release.track.name }}
+                </td>
+            </tr>
+            <tr>
+                <td>Download:</td>
+                <td>
+                    <a href="{{ release.file.url }}" target="_blank">
+                        link
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <a href="{% url 'plugins:release_delete' plugin_name=plugin.name release_id=release.id %}">Delete release</a>
+    </div>
+{% endfor %}

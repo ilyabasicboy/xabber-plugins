@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% load base_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Xabber Plugins</title>
+</head>
+{% block body %}
+    <body>
+        <header>
+
+            {% if request.user.is_authenticated %}
+                <div>
+                    {{ request.user.username }}
+                    <a href="{% url 'custom_auth:logout' %}">
+                        Logout
+                    </a>
+                </div>
+            {% endif %}
+        </header>
+        {% block content %}
+        {% endblock %}
+
+        {% get_messages as messages %}
+        {% if messages %}
+            {% if messages.success %}
+                <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {% for message in messages.success %}
+                                <div class="{% if not forloop.last %}mb-1{% endif %}">
+                                    {{ message|striptags }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endif %}
+            {% if messages.error %}
+                <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {% for message in messages.error %}
+                                <div class="{% if not forloop.last %}mb-1{% endif %}">
+                                    {{ message|striptags }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </body>
+{% endblock %}
+</html>

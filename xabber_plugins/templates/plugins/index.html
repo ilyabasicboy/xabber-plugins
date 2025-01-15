@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  {% if plugin_list %}
+    {% include 'plugins/parts/plugin_list.html' %}
+  {% endif %}
+
+  <div>
+    Create new plugin
+    <form action="{% url 'plugins:plugin_list' %}" method="POST">
+      {% csrf_token %}
+      <div>
+        <input type="text" name="name" class="{% if plugin_form.name.errors %}error{% endif %}" placeholder="plugin_name" required>
+        Plugin name should be slugified and unique.
+      </div>
+
+      <div>
+        <input type="text" name="display_name" class="{% if plugin_form.display_name.errors %}error{% endif %}" placeholder="Plugin Display Name" required>
+      </div>
+      <button>
+        Submit
+      </button>
+    </form>
+  </div>
+{% endblock %}

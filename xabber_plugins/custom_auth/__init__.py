@@ -1,0 +1,1 @@
+default_app_config = 'xabber_plugins.custom_auth.apps.CustomAuthConfig'
