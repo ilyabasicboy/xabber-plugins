@@ -19,18 +19,25 @@
         <div>
             {% for description in plugin.descriptions.all %}
                 <div>
-                    <div>
-                        Language: {{ description.language }}
-                    </div>
-                    <div>
-                        Description: {{ description.description }}
-                    </div>
-                    <div>
-                        Default: {{ description.default }}
-                    </div>
+                    <form method="POST" action="{% url 'plugins:change_description' plugin_name=plugin.name plugin_description_id=description.id %}">
+                        {% csrf_token %}
+                        <div>
+                            Language: {{ description.get_language_display }}
+                        </div>
+                        <div>
+                            Description: {{ description.description }}
+                        </div>
+                        <textarea name="description"></textarea>
+                        <div>
+                            Default: {{ description.default }}
+                        </div>
+                        <input type="checkbox" name="default">
 
+                        <button>Change</button>
+                    </form>
                     <a href="{% url 'plugins:delete_description' plugin_name=plugin.name description_id=description.id %}">Delete</a>
                 </div>
+
             {% endfor %}
         </div>
     {% endif %}
@@ -39,7 +46,11 @@
         Add description
         <form action="{% url 'plugins:add_description' plugin_name=plugin.name %}" method="POST">
             {% csrf_token %}
-            <input type="text" name="language" placeholder="ru">
+            <select name="language" id="">
+                {% for choice in plugin_description_form.language.field.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
             <input type="checkbox" name="default">
             <textarea name="description" placeholder="Plugin description"></textarea>
 

@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.utils.text import slugify
 
+from pycountry import languages
+
 import tarfile
 import os
 
@@ -79,3 +81,17 @@ def validate_module(file, plugin_name):
 def get_upload_release_folder(instance, filename):
     plugin_name = slugify(instance.plugin.name)
     return os.path.join(settings.RELEASE_UPLOAD_FOLDER, plugin_name, filename)
+
+
+def get_language_codes():
+    language_codes = []
+    for language in languages:
+        if hasattr(language, 'alpha_2'):
+            language_code = language.alpha_2
+            language_name = language.name
+            language_codes.append((language_code, language_name))
+        # elif hasattr(language, 'alpha_3'):
+        #     language_code = language.alpha_3
+        #     language_codes.append((language_code, language_code))
+
+    return language_codes

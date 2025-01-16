@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from xabber_plugins.plugins.models import Plugin, Release, Track, PluginDescription
-from xabber_plugins.plugins.forms import PluginForm
+from xabber_plugins.plugins.forms import PluginForm, PluginDescriptionForm
 from xabber_plugins.utils import validate_module, get_upload_release_folder
 
 import re
@@ -101,8 +101,11 @@ class PluginDescriptionList(LoginRequiredMixin, TemplateView):
         except Plugin.DoesNotExist:
             raise Http404
 
+        plugin_description_form = PluginDescriptionForm()
+
         context = {
             'plugin': plugin,
+            'plugin_description_form': plugin_description_form,
         }
         return self.render_to_response(context)
 
@@ -120,20 +123,54 @@ class AddPluginDescription(LoginRequiredMixin, View):
         except Plugin.DoesNotExist:
             raise Http404
 
-        description = request.POST.get('description').strip()
         default = request.POST.get('default')
         language = request.POST.get('language', '').strip().lower()
 
+        data = {
+            'description': request.POST.get('description').strip(),
+            'default': True if default else False,
+            'language': language,
+            'plugin': plugin,
+        }
+        plugin_description_form = PluginDescriptionForm(data)
+
         if PluginDescription.objects.filter(plugin=plugin, language=language).exists():
             messages.error(request, 'Description with this language code already exists')
-        else:
-            PluginDescription.objects.create(
-                language=language,
-                description=description,
-                plugin=plugin,
-                default=True if default else False,
-            )
+        elif plugin_description_form.is_valid():
+            plugin_description_form.save()
             messages.success(request, 'Description added successfully.')
+        else:
+            messages.error(request, 'Form data is incorrect.')
+
+        return HttpResponseRedirect(reverse('plugins:description_list', kwargs={'plugin_name': plugin.name}))
+
+
+class ChangePluginDescription(LoginRequiredMixin, View):
+
+    def post(self, request, plugin_name, plugin_description_id, *args, **kwargs):
+        developer = request.user
+
+        try:
+            plugin = Plugin.objects.get(
+                developer=developer,
+                name=plugin_name
+            )
+        except Plugin.DoesNotExist:
+            raise Http404
+
+        try:
+            plugin_description = plugin.descriptions.get(id=plugin_description_id)
+        except PluginDescription.DoesNotExist:
+            raise Http404
+
+        default = request.POST.get('default')
+        description = request.POST.get('description').strip()
+
+        plugin_description.default = True if default else False
+        plugin_description.description = description
+
+        plugin_description.save()
+        messages.success(request, 'Description changed successfully.')
 
         return HttpResponseRedirect(reverse('plugins:description_list', kwargs={'plugin_name': plugin.name}))
 
@@ -310,7 +347,6 @@ class ReleaseCreate(LoginRequiredMixin, View):
 
         xabber_server_panel_versions = request.POST.get('xabber_server_panel_versions')
         xabber_server_panel_versions = [v for v in re.split(r'[;, ]+', xabber_server_panel_versions) if v]
-        print(file.name)
         version = request.POST.get('version')
 
         if Release.objects.filter(track=track_obj, plugin=plugin, version=version).exists():

@@ -11,6 +11,7 @@ urlpatterns = [
     # description urls
     path('<str:plugin_name>/description_list/', views.PluginDescriptionList.as_view(), name='description_list'),
     path('<str:plugin_name>/add_description/', views.AddPluginDescription.as_view(), name='add_description'),
+    path('<str:plugin_name>/change_description/<int:plugin_description_id>/', views.ChangePluginDescription.as_view(), name='change_description'),
     path('<str:plugin_name>/delete_description/<int:description_id>/', views.DeletePluginDescription.as_view(), name='delete_description'),
 
     # release urls
