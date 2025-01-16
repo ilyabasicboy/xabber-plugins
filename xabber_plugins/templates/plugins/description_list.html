@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    <div>
+        <a href="{% url 'plugins:plugin_list' %}">Plugin list</a>
+        >
+        <a href="{% url 'plugins:plugin_detail' plugin_name=plugin.name %}">
+            {{ plugin.display_name }}
+        </a>
+        >
+        <div>
+            Description list
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if plugin.descriptions.exists %}
+        <div>
+            {% for description in plugin.descriptions.all %}
+                <div>
+                    <div>
+                        Language: {{ description.language }}
+                    </div>
+                    <div>
+                        Description: {{ description.description }}
+                    </div>
+                    <div>
+                        Default: {{ description.default }}
+                    </div>
+
+                    <a href="{% url 'plugins:delete_description' plugin_name=plugin.name description_id=description.id %}">Delete</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div>
+        Add description
+        <form action="{% url 'plugins:add_description' plugin_name=plugin.name %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="language" placeholder="ru">
+            <input type="checkbox" name="default">
+            <textarea name="description" placeholder="Plugin description"></textarea>
+
+            <button>Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <a href="{% url 'plugins:plugin_delete' plugin_name=plugin.name %}">Delete Plugin</a>
+    </div>
+{% endblock %}

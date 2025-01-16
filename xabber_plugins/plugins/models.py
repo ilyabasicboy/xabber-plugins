@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from django.conf import settings
-from django.utils.text import slugify
 
 from xabber_plugins.custom_auth.models import Developer
 from xabber_plugins.validators import validate_slug
+from xabber_plugins.utils import get_upload_release_folder
 
 import os
 
@@ -24,15 +23,24 @@ class Plugin(models.Model):
         on_delete=models.CASCADE
     )
 
+    def __str__(self):
+        return self.name
+
 
 class PluginDescription(models.Model):
     description = models.TextField()
     language = models.TextField()
+    default = models.BooleanField(
+        default=False
+    )
     plugin = models.ForeignKey(
         Plugin,
         related_name='descriptions',
         on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return f'{self.plugin.name} - {self.language}'
 
 
 class Track(models.Model):
@@ -42,10 +50,8 @@ class Track(models.Model):
         on_delete=models.CASCADE,
     )
 
-
-def get_upload_release_folder(instance, filename):
-    plugin_name = slugify(instance.plugin.name)
-    return os.path.join(settings.RELEASE_UPLOAD_FOLDER, plugin_name, filename)
+    def __str__(self):
+        return f'{self.plugin.name} - {self.name}'
 
 
 class Release(models.Model):
@@ -83,3 +89,10 @@ class Release(models.Model):
         Track,
         on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return f'{self.plugin.name} - {self.version}'
+
+    @property
+    def filename(self):
+        return os.path.basename(self.file.name)

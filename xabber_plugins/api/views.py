@@ -33,7 +33,8 @@ class PluginListApi(View):
                 'developer_email': developer.email,
                 'developer_contacts': developer.contacts,
                 'developer_site': developer.site,
-                'release': release.version if release else None
+                'release': release.version if release else None,
+                'download': f'{request.scheme}://{request.get_host()}{release.file.url}'
             }
 
             plugin_element = ET.SubElement(response_element, 'plugin')

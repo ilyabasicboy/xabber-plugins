@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.conf import settings
+from django.utils.text import slugify
 
 import tarfile
 import os
@@ -72,3 +74,8 @@ def validate_module(file, plugin_name):
         # Handle unexpected errors
         print(f"Unexpected error: {e}")
         return False
+
+
+def get_upload_release_folder(instance, filename):
+    plugin_name = slugify(instance.plugin.name)
+    return os.path.join(settings.RELEASE_UPLOAD_FOLDER, plugin_name, filename)

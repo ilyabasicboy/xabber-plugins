@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    <div>
+        <a href="{% url 'plugins:plugin_list' %}">Plugin list</a>
+        >
+        <a href="{% url 'plugins:plugin_detail' plugin_name=plugin.name %}">
+            {{ plugin.display_name }}
+        </a>
+        >
+        <div>
+            Release list
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if release_list %}
+        {% include 'plugins/parts/release_list.html' %}
+    {% endif %}
+
+    <div>
+        Create release
+
+        <form action="{% url 'plugins:release_create' plugin_name=plugin.name %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div>
+                <input type="text" name="version" placeholder="{% now 'y.m' %}" required>
+            </div>
+
+            <div>
+                <label for="xabber_server_versions">Xabber Server Versions</label>
+                <textarea name="xabber_server_versions" id="xabber_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
+                <div>List of versions separated by: ",;" or spaces</div>
+            </div>
+
+            <div>
+                <label for="xmpp_server_versions">XMPP Server Versions</label>
+                <textarea name="xmpp_server_versions" id="xmpp_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
+                <div>List of versions separated by: ",;" or spaces</div>
+            </div>
+
+            <div>
+                <label for="xabber_server_panel_versions">Xabber Server Panel Versions</label>
+                <textarea name="xabber_server_panel_versions" id="xabber_server_panel_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
+                <div>List of versions separated by: ",;" or spaces</div>
+            </div>
+
+            <div>
+                <select name="track">
+                    <option value="free">Free</option>
+                    <option value="paid">Paid</option>
+                </select>
+            </div>
+            
+            <div>
+                <input type="file" accept=".tar.gz" name="file" required>
+            </div>
+
+            <button>
+                Submit
+            </button>
+        </form>
+    </div>
+
+{% endblock %}

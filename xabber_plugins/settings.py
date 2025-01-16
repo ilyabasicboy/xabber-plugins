@@ -5,6 +5,8 @@ PROJECT_DIR = os.path.abspath(os.path.join(BASE_DIR, os.pardir))
 PROJECT_ROOT = os.path.join(BASE_DIR, 'xabber_plugins')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+MEDIA_URL = '/media/'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-w#gqoiskp9aaxmjpxbecsfjn3q0#c=a7x0f3jf-cgyzt)7oq7='
 
@@ -49,6 +51,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
             ],
         },
     },
@@ -96,7 +100,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # -------- PLUGINS -------- #
 INSTALLED_APPS += ['xabber_plugins.plugins']
 
-RELEASE_UPLOAD_FOLDER = os.path.join('media', 'releases')
+RELEASE_UPLOAD_FOLDER = 'releases'
 
 # -------- CUSTOM AUTH -------- #
 

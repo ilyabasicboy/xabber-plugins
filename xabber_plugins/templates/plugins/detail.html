@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block breadcrumbs %}
     <div>
         <a href="{% url 'plugins:plugin_list' %}">Plugin list</a>
         >
@@ -8,81 +8,9 @@
             {{ plugin.display_name }}
         </div>
     </div>
+{% endblock %}
 
-    {% if release_list %}
-        {% include 'plugins/parts/release_list.html' %}
-    {% endif %}
-
-    <div>
-        Create release
-
-        <form action="{% url 'plugins:release_create' plugin_name=plugin.name %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div>
-                <input type="text" name="version" placeholder="{% now 'y.m' %}" required>
-            </div>
-
-            <div>
-                <label for="xabber_server_versions">Xabber Server Versions</label>
-                <textarea name="xabber_server_versions" id="xabber_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
-                <div>List of versions separated by: ",;" or spaces</div>
-            </div>
-
-            <div>
-                <label for="xmpp_server_versions">XMPP Server Versions</label>
-                <textarea name="xmpp_server_versions" id="xmpp_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
-                <div>List of versions separated by: ",;" or spaces</div>
-            </div>
-
-            <div>
-                <label for="xabber_server_panel_versions">Xabber Server Panel Versions</label>
-                <textarea name="xabber_server_panel_versions" id="xabber_server_panel_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"></textarea>
-                <div>List of versions separated by: ",;" or spaces</div>
-            </div>
-
-            <div>
-                <select name="track">
-                    <option value="free">Free</option>
-                    <option value="paid">Paid</option>
-                </select>
-            </div>
-            
-            <div>
-                <input type="file" accept=".tar.gz" name="file" required>
-            </div>
-
-            <button>
-                Submit
-            </button>
-        </form>
-    </div>
-
-    {% if plugin.descriptions.exists %}
-        <div>
-            {% for description in plugin.descriptions.all %}
-                <div>
-                    <div>language: {{ description.language }}</div>
-                    {{ description.description }}
-
-                    <a href="{% url 'plugins:delete_description' plugin_name=plugin.name description_id=description.id %}">Delete</a>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <div>
-        Add description
-        <form action="{% url 'plugins:add_description' plugin_name=plugin.name %}" method="POST">
-            {% csrf_token %}
-            <input type="text" name="language" placeholder="ru">
-            <textarea name="description" placeholder="Plugin description"></textarea>
-
-            <button>Submit</button>
-        </form>
-    </div>
-
-    <div>
-        <a href="{% url 'plugins:plugin_delete' plugin_name=plugin.name %}">Delete Plugin</a>
-    </div>
+{% block content %}
+    <a href="{% url 'plugins:release_list' plugin_name=plugin.name %}">Release list</a>
+    <a href="{% url 'plugins:description_list' plugin_name=plugin.name %}">Description list</a>
 {% endblock %}

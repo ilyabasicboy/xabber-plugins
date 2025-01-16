@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    <div>
+        <a href="{% url 'plugins:plugin_list' %}">Plugin list</a>
+        >
+        <a href="{% url 'plugins:plugin_detail' plugin_name=plugin.name %}">
+            {{ plugin.display_name }}
+        </a>
+        >
+        <a href="{% url 'plugins:release_list' plugin_name=plugin.name %}">
+            Release list
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div>
+        <form method="POST" action="{% url 'plugins:release_detail' plugin_name=plugin.name release_id=release.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div>
+                <div>Release version:</div>
+                <input type="text" name="version" placeholder="{% now 'y.m' %}" required value="{{ release.version }}">
+            </div>
+            <div>
+                <div>Xabber Server Versions:</div>
+
+                <div>
+                    <label for="xabber_server_versions">Xabber Server Versions</label>
+                    <textarea name="xabber_server_versions" id="xabber_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"
+                    >{% for version in release.xabber_server_versions %}{{ version }}{% endfor %}</textarea>
+                    <div>List of versions separated by: ",;" or spaces</div>
+                </div>
+            </div>
+            <div>
+                <div>XMPP Server Versions:</div>
+
+                <div>
+                    <label for="xmpp_server_versions">XMPP Server Versions</label>
+                    <textarea name="xmpp_server_versions" id="xmpp_server_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"
+                    >{% for version in release.xmpp_server_versions %}{{ version }}{% endfor %}</textarea>
+                    <div>List of versions separated by: ",;" or spaces</div>
+                </div>
+            </div>
+            <div>
+                <div>Xabber Server Panel Versions:</div>
+
+                <div>
+                    <label for="xabber_server_panel_versions">Xabber Server Panel Versions</label>
+                    <textarea name="xabber_server_panel_versions" id="xabber_server_panel_versions" placeholder="{% now 'y.m' %}.1, {% now 'y.m' %}.2, {% now 'y.m' %}.3"
+                    >{% for version in release.xabber_server_panel_versions %}{{ version }}{% endfor %}</textarea>
+                    <div>List of versions separated by: ",;" or spaces</div>
+                </div>
+            </div>
+            <div>
+                <div>Verified:</div>
+                <input type="checkbox" name="verified" {% if release.verified %}checked{% endif %}>
+            </div>
+            <div>
+                <div>Track:</div>
+                <select name="track">
+                    <option value="free" {% if release.track.name == 'free' %}selected{% endif %}>Free</option>
+                    <option value="paid" {% if release.track.name == 'paid' %}selected{% endif %}>Paid</option>
+                </select>
+            </div>
+            <div>
+                <div>File:</div>
+                <a href="{{ release.file.url }}" target="_blank">
+                    Download
+                </a>
+
+                <div>
+                    <input type="file" accept=".tar.gz" name="file">
+                </div>
+            </div>
+
+            <button>Save</button>
+        </form>
+
+        <a href="{% url 'plugins:release_delete' plugin_name=plugin.name release_id=release.id %}">Delete release</a>
+    </div>
+{% endblock %}

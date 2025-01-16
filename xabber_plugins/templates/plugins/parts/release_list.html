@@ -1,60 +1,17 @@
-{% for release in release_list %}
-    <div>
-        <table>
-            <tr>
-                <td>Release version:</td>
-                <td>{{ release.version }}</td>
-            </tr>
-            <tr>
-                <td>Xabber Server Versions:</td>
-                <td>
-                    {% for version in release.xabber_server_versions %}
-                        {{ version }}
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>XMPP Server Versions:</td>
-                <td>
-                    {% for version in release.xmpp_server_versions %}
-                        {{ version }}
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>Xabber Server Panel Versions:</td>
-                <td>
-                    {% for version in release.xabber_server_panel_versions %}
-                        {{ version }}
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>Verified:</td>
-                <td>
-                    {% if release.veryfied %}
-                        Verified
-                    {% else %}
-                        Not verified
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td>Track:</td>
-                <td>
-                    {{ release.track.name }}
-                </td>
-            </tr>
-            <tr>
-                <td>Download:</td>
-                <td>
-                    <a href="{{ release.file.url }}" target="_blank">
-                        link
-                    </a>
-                </td>
-            </tr>
-        </table>
+{% load base_tags %}
 
-        <a href="{% url 'plugins:release_delete' plugin_name=plugin.name release_id=release.id %}">Delete release</a>
-    </div>
-{% endfor %}
+{% if release_list %}
+    {% paginate release_list 24 as paginated_release_list %}
+
+    {% for release in paginated_release_list %}
+        <div>
+            <a href="{% url 'plugins:release_detail' plugin_name=plugin.name release_id=release.id %}">
+                {{ release.version }} - {{ release.track.name }}
+            </a>
+        </div>
+    {% endfor %}
+
+    {% if release_list.count > 24 %}
+        {% include 'parts/pagination.html' with objects=paginated_release_list %}
+    {% endif %}
+{% endif %}
