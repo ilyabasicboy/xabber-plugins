@@ -142,10 +142,7 @@ class Email(models.Model):
             expires=timezone.now() + timedelta(hours=settings.VERIFICATION_KEY_EXPIRES)
         )
 
-        verification_url = os.path.join(
-            settings.SITE_URL,
-            reverse('custom_auth:email_verification', kwargs={'key': verification_key.key})
-        )
+        verification_url = f"{settings.SITE_URL}{reverse('custom_auth:email_verification', kwargs={'key': verification_key.key})}"
 
         try:
             send_mail(

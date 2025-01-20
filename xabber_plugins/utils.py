@@ -80,7 +80,7 @@ def validate_module(file, plugin_name):
 
 def get_upload_release_folder(instance, filename):
     plugin_name = slugify(instance.plugin.name)
-    return os.path.join(settings.RELEASE_UPLOAD_FOLDER, plugin_name, filename)
+    return os.path.join(settings.RELEASE_UPLOAD_FOLDER, plugin_name, instance.track.name, filename)
 
 
 def get_language_codes():

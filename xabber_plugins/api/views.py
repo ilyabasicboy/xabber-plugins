@@ -1,7 +1,12 @@
 from django.http import HttpResponse
 from django.views import View
+from django.conf import settings
+
 import xml.etree.ElementTree as ET
+
 from xabber_plugins.plugins.models import Plugin
+
+import os
 
 
 class PluginListApi(View):
@@ -9,6 +14,7 @@ class PluginListApi(View):
     def get(self, request, *args, **kwargs):
         plugins = Plugin.objects.all()
 
+        language = request.GET.get('language', '')
         name = request.GET.get('name')
         if name:
             plugins = plugins.filter(name=name)
@@ -34,7 +40,7 @@ class PluginListApi(View):
                 'developer_contacts': developer.contacts,
                 'developer_site': developer.site,
                 'release': release.version if release else None,
-                'download': f'{request.scheme}://{request.get_host()}{release.file.url}'
+                'download': f'{settings.SITE_URL}{release.file.url}'
             }
 
             plugin_element = ET.SubElement(response_element, 'plugin')
@@ -43,11 +49,15 @@ class PluginListApi(View):
                 sub_element = ET.SubElement(plugin_element, key)
                 sub_element.text = str(value) if value else ''
 
+            description = plugin.descriptions.filter(language=language).first()
+            if not description:
+                description = plugin.descriptions.filter(default=True).first()
+            if not description:
+                description = plugin.descriptions.all().first()
+
             # Adding descriptions with the language attribute
-            descriptions = plugin.descriptions.all()
-            for description in descriptions:
-                description_element = ET.SubElement(plugin_element, 'description', language=description.language)
-                description_element.text = description.description
+            description_element = ET.SubElement(plugin_element, 'description', language=description.language)
+            description_element.text = description.description
 
         # Convert the tree to a byte string
         xml_data = ET.tostring(response_element, encoding='utf-8', method='xml')
