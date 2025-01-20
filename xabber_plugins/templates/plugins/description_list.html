@@ -16,30 +16,7 @@
 
 {% block content %}
     {% if plugin.descriptions.exists %}
-        <div>
-            {% for description in plugin.descriptions.all %}
-                <div>
-                    <form method="POST" action="{% url 'plugins:change_description' plugin_name=plugin.name plugin_description_id=description.id %}">
-                        {% csrf_token %}
-                        <div>
-                            Language: {{ description.get_language_display }}
-                        </div>
-                        <div>
-                            Description: {{ description.description }}
-                        </div>
-                        <textarea name="description"></textarea>
-                        <div>
-                            Default: {{ description.default }}
-                        </div>
-                        <input type="checkbox" name="default">
-
-                        <button>Change</button>
-                    </form>
-                    <a href="{% url 'plugins:delete_description' plugin_name=plugin.name description_id=description.id %}">Delete</a>
-                </div>
-
-            {% endfor %}
-        </div>
+        {% include 'plugins/parts/description_list.html' with description_list=plugin.descriptions.all %}
     {% endif %}
 
     <div>

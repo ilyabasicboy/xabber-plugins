@@ -1,0 +1,26 @@
+{% if description_list %}
+    <div>
+        {% for description in description_list %}
+            <div>
+                <form method="POST" action="{% url 'plugins:change_description' plugin_name=plugin.name plugin_description_id=description.id %}">
+                    {% csrf_token %}
+                    <div>
+                        Language: {{ description.get_language_display }}
+                    </div>
+                    <div>
+                        Description: {{ description.description }}
+                    </div>
+                    <textarea name="description">{{ description.description }}</textarea>
+                    <div>
+                        Default: {{ description.default }}
+                    </div>
+                    <input type="checkbox" name="default" {% if description.default %}checked{% endif %}>
+
+                    <button>Change</button>
+                </form>
+                <a href="{% url 'plugins:delete_description' plugin_name=plugin.name description_id=description.id %}">Delete</a>
+            </div>
+
+        {% endfor %}
+    </div>
+{% endif %}

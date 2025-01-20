@@ -172,6 +172,10 @@ class ChangePluginDescription(LoginRequiredMixin, View):
         plugin_description.save()
         messages.success(request, 'Description changed successfully.')
 
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return HttpResponseRedirect(referer)
+
         return HttpResponseRedirect(reverse('plugins:description_list', kwargs={'plugin_name': plugin.name}))
 
 

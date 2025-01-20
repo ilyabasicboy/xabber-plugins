@@ -4,17 +4,27 @@
     <form method="post">
         {% csrf_token %}
         <div>
-            <label for="email">Email:</label>
+            <label for="email" class="{% if form.email.errors %}error{% endif %}">Email:</label>
             <input type="email" name="email" id="email" required>
         </div>
         <div>
-            <label for="password">Password:</label>
+            <label for="password" class="{% if form.password.errors %}error{% endif %}">Password:</label>
             <input type="password" name="password" id="password" required>
         </div>
         <button type="submit">Login</button>
     </form>
 
-    {% if form.errors.password %}
-        {{ form.errors.password|striptags }}
+    {% if form.errors %}
+        {% for error in form.errors.values %}
+            {{ error|striptags }}
+        {% endfor %}
     {% endif %}
+
+    <a href="{% url 'custom_auth:registration' %}">
+        Registration
+    </a>
+
+    {% block messages %}
+        {{ block.super }}
+    {% endblock %}
 {% endblock %}

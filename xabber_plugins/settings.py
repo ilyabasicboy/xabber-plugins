@@ -7,6 +7,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
+SITE_URL = ''
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-w#gqoiskp9aaxmjpxbecsfjn3q0#c=a7x0f3jf-cgyzt)7oq7='
 
@@ -15,6 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEFAULT_FROM_EMAIL = 'no-reply@xabber.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
 
@@ -113,7 +117,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/custom_auth/login/'
+LOGIN_URL = '/auth/login/'
+
+VERIFICATION_KEY_EXPIRES = 1 # Hours
 
 # -------- API -------- #
 INSTALLED_APPS += ['xabber_plugins.api']

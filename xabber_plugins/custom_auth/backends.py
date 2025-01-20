@@ -3,11 +3,11 @@ from xabber_plugins.custom_auth.models import Developer
 
 class CustomAuthBackend:
 
-    def authenticate(self, request, username, password, **kwargs):
+    def authenticate(self, request, email, password, **kwargs):
 
         try:
             user = Developer.objects.get(
-                email=username,
+                email__email=email,
             )
         except:
             return None

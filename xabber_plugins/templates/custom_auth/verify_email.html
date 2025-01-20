@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div>
+        Your email {{ developer.email.email }} is not verified. Please follow the link sent in the email to complete your registration.
+    </div>
+
+    <div>
+        <a href="{% url 'custom_auth:resend_verification_code' user_id=developer.id %}">Resend the confirmation email.</a>
+    </div>
+
+    {% block messages %}
+        {{ block.super }}
+    {% endblock %}
+{% endblock %}
